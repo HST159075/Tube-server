@@ -6,7 +6,7 @@
 
     /* Environment Settings */
     "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "node10",
     "target": "es2023",
     "lib": ["esnext"],
     "types": ["node"],

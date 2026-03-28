@@ -4,12 +4,12 @@ import {
   createReview,
   approveReview,
   getReviewsByMedia,
-} from "../controllers/review.controller";
+} from "../controllers/review.controller.js";
 
 import {
   authMiddleware,
   adminMiddleware,
-} from "../middlewares/auth.middleware";
+} from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

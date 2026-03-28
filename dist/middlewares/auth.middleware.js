@@ -1,4 +1,4 @@
-import { auth } from "../lib/auth";
+import { auth } from "../lib/auth.js";
 import { fromNodeHeaders } from "better-auth/node";
 export const authMiddleware = async (req, res, next) => {
     try {

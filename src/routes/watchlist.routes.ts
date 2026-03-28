@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { addToWatchlist, getMyWatchlist, removeFromWatchlist } from "../controllers/watchList.controller";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { addToWatchlist, getMyWatchlist, removeFromWatchlist } from "../controllers/watchList.controller.js";
 
 const router = Router();
 router.use(authMiddleware);

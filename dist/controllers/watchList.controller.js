@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 export const addToWatchlist = async (req, res) => {
     try {
         const { mediaId } = req.body;

@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 // ১. Get All Media with Filters
 export const getAllMedia = async (req, res) => {
     try {

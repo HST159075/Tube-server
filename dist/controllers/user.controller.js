@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 // ১. এডমিনের জন্য সব ইউজার (মেটা ডাটাসহ)
 export const getAllUsersForAdmin = async (req, res) => {
     try {

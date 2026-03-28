@@ -1,14 +1,14 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 
-import authRoutes from "./routes/auth.routes";
-import mediaRoutes from "./routes/media.routes";
-import reviewRoutes from "./routes/review.routes";
-import watchlistRoutes from "./routes/watchlist.routes";
-import paymentRoutes from "./routes/payment.routes";
-import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes.js";
+import mediaRoutes from "./routes/media.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import watchlistRoutes from "./routes/watchlist.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { toNodeHandler } from "better-auth/node";
-import { auth } from "./lib/auth";
+import { auth } from "./lib/auth.js";
 
 const app: Application = express();
 

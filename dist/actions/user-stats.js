@@ -1,5 +1,5 @@
 "use server";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 // তোমার প্রিজমা ক্লায়েন্ট যেখানে আছে সেখান থেকে ইমপোর্ট করো
 export async function getUserStats(userId) {
     if (!userId)

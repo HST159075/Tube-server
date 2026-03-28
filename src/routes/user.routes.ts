@@ -6,12 +6,12 @@ import {
   getAdminStats,
   getAllUsersForAdmin,
   deleteUser, // নতুন ইমপোর্ট
-} from "../controllers/user.controller";
+} from "../controllers/user.controller.js";
 import {
   authMiddleware,
   adminMiddleware,
-} from "../middlewares/auth.middleware";
-import { upload } from "../lib/cloudinary";
+} from "../middlewares/auth.middleware.js";
+import { upload } from "../lib/cloudinary.js";
 
 const router = Router();
 

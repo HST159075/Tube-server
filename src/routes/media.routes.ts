@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { getAllMedia, createMedia, getMediaById, watchMedia, deleteMedia } from "../controllers/media.controller";
-import { authMiddleware, adminMiddleware } from "../middlewares/auth.middleware";
-import { checkContentAccess,  } from "../middlewares/checkSubscription.middleware";
+import { getAllMedia, createMedia, getMediaById, watchMedia, deleteMedia } from "../controllers/media.controller.js";
+import { authMiddleware, adminMiddleware } from "../middlewares/auth.middleware.js";
+import { checkContentAccess,  } from "../middlewares/checkSubscription.middleware.js";
 
 const router = Router();
 

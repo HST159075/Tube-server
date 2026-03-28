@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 export const checkContentAccess = async (req, res, next) => {
     try {
         // ১. আইডি নিশ্চিত করা (Type Casting)

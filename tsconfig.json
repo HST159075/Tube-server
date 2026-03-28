@@ -1,31 +1,21 @@
 {
   "compilerOptions": {
-    /* File Layout */
     "rootDir": "./src",
     "outDir": "./dist",
-
-    /* Environment Settings */
     "module": "CommonJS",
-    "moduleResolution": "node10",
+    "moduleResolution": "node",
     "target": "es2023",
     "lib": ["esnext"],
     "types": ["node"],
 
-    /* Other Outputs */
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-"ignoreDeprecations": "5.0",
-    /* Typechecking Options - এরর কমাতে এগুলো শিথিল করা হয়েছে */
+    /* এই লাইনটি একদম নিশ্চিত করো আছে কি না */
+    "ignoreDeprecations": "5.0", 
+
     "strict": false,
     "noImplicitAny": false,
-    "noUncheckedIndexedAccess": false,
-
-    /* Recommended Options */
     "esModuleInterop": true,
-    "isolatedModules": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "isolatedModules": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

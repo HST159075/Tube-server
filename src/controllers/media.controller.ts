@@ -1,0 +1,134 @@
+import { Request, Response } from "express";
+import { prisma } from "../lib/prisma";
+
+// ১. Get All Media with Filters
+export const getAllMedia = async (req: Request, res: Response) => {
+  try {
+    const { genre, type, search, sortBy } = req.query;
+
+    const where: any = {};
+    if (type) where.type = type as string;
+    
+    // যদি genre থাকে, তবে তা arrays এর ভেতর চেক করবে
+    if (genre) where.genres = { has: genre as string };
+    
+    if (search) {
+      where.OR = [
+        { title: { contains: String(search), mode: 'insensitive' } },
+        { director: { contains: String(search), mode: 'insensitive' } }
+      ];
+    }
+
+    const media = await prisma.media.findMany({
+      where,
+      include: {
+        _count: { select: { reviews: true } }
+      },
+      orderBy: sortBy === 'rating' ? { avgRating: 'desc' } : { createdAt: 'desc' }
+    });
+
+    res.status(200).json({ success: true, data: media });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ২. Create Media (Admin Only)
+export const createMedia = async (req: Request, res: Response) => {
+  try {
+    const data = req.body;
+    
+    if (!data.title || !data.videoUrl) {
+      return res.status(400).json({ success: false, message: "Title and Video URL are required" });
+    }
+
+    const newMedia = await prisma.media.create({
+      data: {
+        ...data,
+        // নিশ্চিত করা হচ্ছে যে releaseYear নাম্বার হিসেবে যাচ্ছে
+        releaseYear: data.releaseYear ? Number(data.releaseYear) : undefined,
+      }
+    });
+
+    res.status(201).json({ success: true, data: newMedia });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// ৩. Get Single Media Details
+export const getMediaById = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string; // টাইপ কাস্টিং নিশ্চিত করা হয়েছে
+
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Media ID is required" });
+    }
+
+    const media = await prisma.media.findUnique({
+      where: { id: id },
+      include: {
+        reviews: {
+          where: { isApproved: true },
+          include: { 
+            user: { 
+              select: { name: true, image: true } 
+            } 
+          }
+        }
+      }
+    });
+
+    if (!media) {
+      return res.status(404).json({ success: false, message: "Media not found" });
+    }
+
+    res.status(200).json({ success: true, data: media });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ৪. Watch Media (Subscription Check)
+export const watchMedia = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+
+    const media = await prisma.media.findUnique({
+      where: { id: id },
+      select: { videoUrl: true, title: true }
+    });
+
+    if (!media) {
+      return res.status(404).json({ success: false, message: "Media not found" });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Streaming started for: ${media.title}`,
+      videoUrl: media.videoUrl 
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ৫. Delete Media (Type-safe Version)
+export const deleteMedia = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+
+    if (!id) {
+      return res.status(400).json({ success: false, message: "Valid Media ID is required" });
+    }
+
+    await prisma.media.delete({ 
+      where: { id: id } 
+    });
+
+    res.status(200).json({ success: true, message: "Movie deleted successfully" });
+  } catch (error: any) {
+    // যদি Prisma কোনো কারণে ডিলিট করতে না পারে (যেমন id খুঁজে না পেলে)
+    res.status(500).json({ success: false, message: "Failed to delete movie. It might not exist." });
+  }
+};

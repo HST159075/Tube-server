@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MediaType {
+  MOVIE
+  SERIES
+}
+
+enum PriceType {
+  FREE
+  PREMIUM
+}
+
+model User {
+  id              String        @id @default(uuid())
+  name            String
+  email           String        @unique
+  emailVerified   Boolean       @default(false)
+  image           String?
+  password        String?
+  role            Role          @default(USER)
+  isSubscribed    Boolean       @default(false)
+  subscriptionEnd DateTime?
+  reviews         Review[]
+  comments        Comment[]
+  likes           Like[]
+  watchlist       Watchlist[]
+  transactions    Transaction[]
+  sessions        Session[]
+  accounts        Account[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  phone  String?
+  status String? @default("ACTIVE")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Media {
+  id            String      @id @default(uuid())
+  title         String
+  synopsis      String      @db.Text
+  type          MediaType   @default(MOVIE)
+  genres        String[]
+  releaseYear   Int
+  director      String
+  cast          String[]
+  posterUrl     String?
+  videoUrl      String
+  priceType     PriceType   @default(FREE)
+  avgRating     Float       @default(0.0)
+  reviews       Review[]
+  watchlistedBy Watchlist[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Review {
+  id         String    @id @default(uuid())
+  rating     Int // 1-10 scale
+  content    String    @db.Text
+  isApproved Boolean   @default(false)
+  hasSpoiler Boolean   @default(false)
+  tags       String[]
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaId    String
+  media      Media     @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  comments   Comment[]
+  likes      Like[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reviewId])
+}
+
+model Watchlist {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaId String
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaId])
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  amount        Float
+  status        String
+  provider      String
+  transactionId String   @unique
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

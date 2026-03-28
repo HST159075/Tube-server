@@ -1,0 +1,93 @@
+import { Request, Response } from "express";
+import Stripe from "stripe";
+import { prisma } from "../lib/prisma";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+export const createCheckoutSession = async (req: Request, res: Response) => {
+  try {
+    // authMiddleware থেকে আসা ইউজার আইডি
+    const userId = req.user?.id;
+    const { planType, amount } = req.body; // planType: 'MONTHLY' or 'YEARLY'
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not authenticated" });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: `CineTube ${planType} Subscription`,
+              description: "Access to all premium movies and series",
+            },
+            unit_amount: Math.round(Number(amount) * 100), // সেন্টে কনভার্ট
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      // ফ্রন্টএন্ড ইউআরএল অনুযায়ী সাকসেস এবং ক্যান্সেল পাথ
+      success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/payment-failed`,
+      metadata: { userId, planType },
+    });
+
+    res.status(200).json({ success: true, url: session.url });
+  } catch (error: any) {
+    console.error("Stripe Session Error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const confirmPayment = async (req: Request, res: Response) => {
+  try {
+    const { session_id } = req.query;
+    if (!session_id) {
+      return res.status(400).json({ success: false, message: "Session ID is required" });
+    }
+
+    // স্ট্রাইপ থেকে সেশন রিট্রিভ করা
+    const session = await stripe.checkout.sessions.retrieve(session_id as string);
+
+    if (session.payment_status === "paid") {
+      const userId = session.metadata?.userId as string;
+      const planType = session.metadata?.planType;
+
+      // সাবস্ক্রিপশন মেয়াদ নির্ধারণ (মাসিক ৩০ দিন, বার্ষিক ৩৬৫ দিন)
+      const duration = planType === "YEARLY" ? 365 : 30;
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + duration);
+
+      // ১. ইউজারের সাবস্ক্রিপশন স্ট্যাটাস আপডেট
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          isSubscribed: true,
+          subscriptionEnd: expiryDate,
+        },
+      });
+
+      // ২. ট্রানজেকশন রেকর্ড তৈরি (Prisma schema তে Transaction মডেল থাকতে হবে)
+      await prisma.transaction.create({
+        data: {
+          userId,
+          amount: (session.amount_total || 0) / 100,
+          status: "COMPLETED",
+          provider: "STRIPE",
+          transactionId: session.id,
+        },
+      });
+
+      return res.status(200).json({ success: true, message: "Subscription activated!" });
+    }
+    
+    res.status(400).json({ success: false, message: "Payment not completed" });
+  } catch (error: any) {
+    console.error("Payment Confirmation Error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

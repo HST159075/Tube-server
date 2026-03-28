@@ -11,8 +11,7 @@ export const auth = betterAuth({
         enabled: true, 
     }, 
     trustedOrigins: [
-        "http://localhost:3000",
-        "http://localhost:5173",
+        "https://chine-tube.vercel.app",
     ],
     user: {
         additionalFields: {

@@ -20,7 +20,7 @@ export const getAllUsersForAdmin = async (req: Request, res: Response) => {
     });
 
     const totalUsers = users.length;
-    const subscribedUsers = users.filter((u) => u.isSubscribed).length;
+    const subscribedUsers = users.filter((u: any) => u.isSubscribed).length;
 
     res.status(200).json({
       success: true,

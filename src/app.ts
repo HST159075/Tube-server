@@ -26,7 +26,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("CineTube Server is Running! 🚀");
 });
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
+app.all("/api/auth/*all", toNodeHandler(auth));
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);

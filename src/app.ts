@@ -12,22 +12,23 @@ import { auth } from "./lib/auth.js";
 
 const app: Application = express();
 
+
 app.all("/api/auth/*all", toNodeHandler(auth));
-app.use(
-  cors({
+app.use(cors({
     origin: "https://chine-tube.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     exposedHeaders: ["set-cookie"],
-  }),
-);
+  }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CineTube Server is Running! 🚀");
 });
+
+
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);

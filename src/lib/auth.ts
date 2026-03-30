@@ -13,7 +13,7 @@ export const auth = betterAuth({
         "https://chine-tube.vercel.app",
         "http://localhost:3000",
     ],
-    // ✅ Cross-domain cookie এর জন্য
+ 
     advanced: {
         crossSubdomainCookies: {
             enabled: false,
@@ -21,8 +21,14 @@ export const auth = betterAuth({
         defaultCookieAttributes: {
             secure: true,
             httpOnly: true,
-            sameSite: "none", // ✅ cross-origin cookie allow করবে
-            partitioned: true, // CHIPS support
+            sameSite: "none", 
+             
+        }
+    },
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60, // ৫ মিনিট
         }
     },
     user: {

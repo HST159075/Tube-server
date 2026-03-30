@@ -11,15 +11,13 @@ export const register = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ success: false, message: "User already exists!" });
         }
-        // পাসওয়ার্ড হ্যাশ করা (নিরাপত্তার জন্য)
         const hashedPassword = await bcrypt.hash(password, 10);
-        // নতুন ইউজার তৈরি
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                role: "USER", // ডিফল্ট রোল
+                role: "USER",
             },
         });
         res.status(201).json({ success: true, message: "User registered successfully!" });

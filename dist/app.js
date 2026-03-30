@@ -9,6 +9,7 @@ import userRoutes from "./routes/user.routes.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 const app = express();
+app.all("/api/auth/*all", toNodeHandler(auth));
 app.use(cors({
     origin: "https://chine-tube.vercel.app",
     credentials: true,
@@ -21,7 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.send("CineTube Server is Running! 🚀");
 });
-app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/reviews", reviewRoutes);

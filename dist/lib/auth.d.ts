@@ -4,6 +4,17 @@ export declare const auth: import("better-auth").Auth<{
         enabled: true;
     };
     trustedOrigins: string[];
+    advanced: {
+        crossSubdomainCookies: {
+            enabled: boolean;
+        };
+        defaultCookieAttributes: {
+            secure: true;
+            httpOnly: true;
+            sameSite: "none";
+            partitioned: true;
+        };
+    };
     user: {
         additionalFields: {
             role: {

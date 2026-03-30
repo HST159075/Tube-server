@@ -4,7 +4,8 @@ import { authMiddleware, adminMiddleware } from "../middlewares/auth.middleware.
 import { checkContentAccess, } from "../middlewares/checkSubscription.middleware.js";
 const router = Router();
 router.get("/", getAllMedia);
-router.get("/:id", getMediaById, deleteMedia);
+router.get("/:id", getMediaById);
+router.delete("/:id", authMiddleware, adminMiddleware, deleteMedia);
 router.post("/", authMiddleware, adminMiddleware, createMedia);
 router.get("/watch/:id", authMiddleware, checkContentAccess, watchMedia);
 export default router;

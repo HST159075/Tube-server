@@ -51,7 +51,7 @@ export const createMedia = async (req, res) => {
 // ৩. Get Single Media Details
 export const getMediaById = async (req, res) => {
     try {
-        const id = req.params.id; // টাইপ কাস্টিং নিশ্চিত করা হয়েছে
+        const id = req.params.id;
         if (!id) {
             return res.status(400).json({ success: false, message: "Media ID is required" });
         }
@@ -77,7 +77,6 @@ export const getMediaById = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ৪. Watch Media (Subscription Check)
 export const watchMedia = async (req, res) => {
     try {
         const id = req.params.id;
@@ -111,7 +110,6 @@ export const deleteMedia = async (req, res) => {
         res.status(200).json({ success: true, message: "Movie deleted successfully" });
     }
     catch (error) {
-        // যদি Prisma কোনো কারণে ডিলিট করতে না পারে (যেমন id খুঁজে না পেলে)
         res.status(500).json({ success: false, message: "Failed to delete movie. It might not exist." });
     }
 };

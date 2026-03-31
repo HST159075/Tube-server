@@ -77,6 +77,8 @@ import reviewRoutes from "./routes/review.routes.js";
 import watchlistRoutes from "./routes/watchlist.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import likeRoutes from "./routes/like.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 
 const app: Application = express();
 
@@ -117,6 +119,8 @@ app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/watchlist", watchlistRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/likes", likeRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
     res.send("CineTube Server is Running! 🚀");

@@ -12,7 +12,12 @@ export declare const auth: import("better-auth").Auth<{
             secure: true;
             httpOnly: true;
             sameSite: "none";
-            partitioned: true;
+        };
+    };
+    session: {
+        cookieCache: {
+            enabled: true;
+            maxAge: number;
         };
     };
     user: {

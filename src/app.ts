@@ -85,7 +85,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ✅ FIX: origin array তে localhost যোগ করো
 const allowedOrigins = [
-    "https://tube-client.vercel.app/",
+    "https://tube-client.vercel.app",
     "http://localhost:3000",   // ← local dev frontend
     "http://localhost:3001",   // ← extra (optional)
 ];

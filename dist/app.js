@@ -59,12 +59,14 @@ import reviewRoutes from "./routes/review.routes.js";
 import watchlistRoutes from "./routes/watchlist.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import likeRoutes from "./routes/like.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // ✅ FIX: origin array তে localhost যোগ করো
 const allowedOrigins = [
-    "https://tube-client.vercel.app/",
+    "https://tube-client.vercel.app",
     "http://localhost:3000", // ← local dev frontend
     "http://localhost:3001", // ← extra (optional)
 ];
@@ -91,6 +93,8 @@ app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/watchlist", watchlistRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/likes", likeRoutes);
+app.use("/api/v1/comments", commentRoutes);
 app.get("/", (_req, res) => {
     res.send("CineTube Server is Running! 🚀");
 });

@@ -116,3 +116,14 @@ export const getAllReviewsForAdmin = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: e.message });
   }
 };
+
+// review.controller.ts এ যোগ করো
+export const getMyReviews = async (req: AuthRequest, res: Response) => {
+  const userId = req.user?.id!;
+  const reviews = await prisma.review.findMany({
+    where: { userId },
+    include: { media: { select: { id: true, title: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+  res.json({ success: true, data: reviews });
+};

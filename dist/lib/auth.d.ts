@@ -4,6 +4,12 @@ export declare const auth: import("better-auth").Auth<{
         enabled: true;
     };
     trustedOrigins: string[];
+    socialProviders: {
+        google: {
+            clientId: string;
+            clientSecret: string;
+        };
+    };
     advanced: {
         crossSubdomainCookies: {
             enabled: boolean;

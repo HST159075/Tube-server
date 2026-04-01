@@ -3,50 +3,51 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma.js";
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    emailAndPassword: { 
-        enabled: true, 
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  trustedOrigins: ["https://tube-client.vercel.app", "http://localhost:3000"],
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
-    trustedOrigins: [
-        "https://tube-client.vercel.app",
-        "http://localhost:3000",
-    ],
- 
-    advanced: {
-        crossSubdomainCookies: {
-            enabled: false,
-        },
-        defaultCookieAttributes: {
-            secure: true,
-            httpOnly: true,
-            sameSite: "none", 
-             
-        }
+  },
+  advanced: {
+    crossSubdomainCookies: {
+      enabled: false,
     },
-    session: {
-        cookieCache: {
-            enabled: true,
-            maxAge: 5 * 60, // ৫ মিনিট
-        }
+    defaultCookieAttributes: {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
     },
-    user: {
-        additionalFields: {
-            role: {
-                type: "string",
-                defaultValue: "USER",
-                required: false
-            },
-            phone: {
-                type: "string",
-                required: false
-            },
-            status: {
-                type: "string",
-                defaultValue: "ACTIVE",
-                required: false
-            }
-        }
-    }
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // ৫ মিনিট
+    },
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "USER",
+        required: false,
+      },
+      phone: {
+        type: "string",
+        required: false,
+      },
+      status: {
+        type: "string",
+        defaultValue: "ACTIVE",
+        required: false,
+      },
+    },
+  },
 });

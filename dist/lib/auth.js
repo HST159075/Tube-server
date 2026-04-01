@@ -8,10 +8,13 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
-    trustedOrigins: [
-        "https://tube-client.vercel.app",
-        "http://localhost:3000",
-    ],
+    trustedOrigins: ["https://tube-client.vercel.app", "http://localhost:3000"],
+    socialProviders: {
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        },
+    },
     advanced: {
         crossSubdomainCookies: {
             enabled: false,
@@ -20,31 +23,31 @@ export const auth = betterAuth({
             secure: true,
             httpOnly: true,
             sameSite: "none",
-        }
+        },
     },
     session: {
         cookieCache: {
             enabled: true,
             maxAge: 5 * 60, // ৫ মিনিট
-        }
+        },
     },
     user: {
         additionalFields: {
             role: {
                 type: "string",
                 defaultValue: "USER",
-                required: false
+                required: false,
             },
             phone: {
                 type: "string",
-                required: false
+                required: false,
             },
             status: {
                 type: "string",
                 defaultValue: "ACTIVE",
-                required: false
-            }
-        }
-    }
+                required: false,
+            },
+        },
+    },
 });
 //# sourceMappingURL=auth.js.map

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 
-// ১. এডমিনের জন্য সব ইউজার (মেটা ডাটাসহ)
 export const getAllUsersForAdmin = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
@@ -36,10 +35,9 @@ export const getAllUsersForAdmin = async (req: Request, res: Response) => {
   }
 };
 
-// ২. ইউজারের নিজের প্রোফাইল
 export const getMyProfile = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id; // Type casting for safety
+    const userId = (req as any).user.id;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -68,7 +66,6 @@ export const getMyProfile = async (req: Request, res: Response) => {
   }
 };
 
-// ৩. প্রোফাইল আপডেট
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
@@ -96,7 +93,6 @@ export const updateProfile = async (req: Request, res: Response) => {
   }
 };
 
-// ৪. এডমিন স্ট্যাটাস (Dashboard)
 export const getAdminStats = async (req: Request, res: Response) => {
   try {
     const [totalUsers, totalMovies, activeSubscriptions] = await Promise.all([
@@ -114,7 +110,6 @@ export const getAdminStats = async (req: Request, res: Response) => {
   }
 };
 
-// ৫. সাধারণ ইউজার লিস্ট
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
@@ -134,7 +129,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// ৬. ইউজার ডিলিট (New & Fixed)
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id as string;
@@ -143,7 +137,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: "Valid User ID is required" });
     }
 
-    // এডমিন নিজে নিজেকে ডিলিট করা থেকে বিরত রাখার লজিক (Optional)
     if (id === (req as any).user.id) {
       return res.status(400).json({ success: false, message: "You cannot delete your own admin account!" });
     }

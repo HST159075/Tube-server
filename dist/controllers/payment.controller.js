@@ -3,11 +3,12 @@ import { prisma } from "../lib/prisma.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createCheckoutSession = async (req, res) => {
     try {
-        // authMiddleware থেকে আসা ইউজার আইডি
         const userId = req.user?.id;
-        const { planType, amount } = req.body; // planType: 'MONTHLY' or 'YEARLY'
+        const { planType, amount } = req.body;
         if (!userId) {
-            return res.status(401).json({ success: false, message: "User not authenticated" });
+            return res
+                .status(401)
+                .json({ success: false, message: "User not authenticated" });
         }
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -25,7 +26,6 @@ export const createCheckoutSession = async (req, res) => {
                 },
             ],
             mode: "payment",
-            // ফ্রন্টএন্ড ইউআরএল অনুযায়ী সাকসেস এবং ক্যান্সেল পাথ
             success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CLIENT_URL}/payment-failed`,
             metadata: { userId, planType },
@@ -41,18 +41,17 @@ export const confirmPayment = async (req, res) => {
     try {
         const { session_id } = req.query;
         if (!session_id) {
-            return res.status(400).json({ success: false, message: "Session ID is required" });
+            return res
+                .status(400)
+                .json({ success: false, message: "Session ID is required" });
         }
-        // স্ট্রাইপ থেকে সেশন রিট্রিভ করা
         const session = await stripe.checkout.sessions.retrieve(session_id);
         if (session.payment_status === "paid") {
             const userId = session.metadata?.userId;
             const planType = session.metadata?.planType;
-            // সাবস্ক্রিপশন মেয়াদ নির্ধারণ (মাসিক ৩০ দিন, বার্ষিক ৩৬৫ দিন)
             const duration = planType === "YEARLY" ? 365 : 30;
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + duration);
-            // ১. ইউজারের সাবস্ক্রিপশন স্ট্যাটাস আপডেট
             await prisma.user.update({
                 where: { id: userId },
                 data: {
@@ -60,7 +59,6 @@ export const confirmPayment = async (req, res) => {
                     subscriptionEnd: expiryDate,
                 },
             });
-            // ২. ট্রানজেকশন রেকর্ড তৈরি (Prisma schema তে Transaction মডেল থাকতে হবে)
             await prisma.transaction.create({
                 data: {
                     userId,
@@ -70,7 +68,9 @@ export const confirmPayment = async (req, res) => {
                     transactionId: session.id,
                 },
             });
-            return res.status(200).json({ success: true, message: "Subscription activated!" });
+            return res
+                .status(200)
+                .json({ success: true, message: "Subscription activated!" });
         }
         res.status(400).json({ success: false, message: "Payment not completed" });
     }

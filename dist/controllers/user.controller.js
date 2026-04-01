@@ -1,5 +1,4 @@
 import { prisma } from "../lib/prisma.js";
-// ১. এডমিনের জন্য সব ইউজার (মেটা ডাটাসহ)
 export const getAllUsersForAdmin = async (req, res) => {
     try {
         const users = await prisma.user.findMany({
@@ -32,10 +31,9 @@ export const getAllUsersForAdmin = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ২. ইউজারের নিজের প্রোফাইল
 export const getMyProfile = async (req, res) => {
     try {
-        const userId = req.user.id; // Type casting for safety
+        const userId = req.user.id;
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -61,7 +59,6 @@ export const getMyProfile = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ৩. প্রোফাইল আপডেট
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -87,7 +84,6 @@ export const updateProfile = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
-// ৪. এডমিন স্ট্যাটাস (Dashboard)
 export const getAdminStats = async (req, res) => {
     try {
         const [totalUsers, totalMovies, activeSubscriptions] = await Promise.all([
@@ -104,7 +100,6 @@ export const getAdminStats = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ৫. সাধারণ ইউজার লিস্ট
 export const getAllUsers = async (req, res) => {
     try {
         const users = await prisma.user.findMany({
@@ -124,14 +119,12 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ৬. ইউজার ডিলিট (New & Fixed)
 export const deleteUser = async (req, res) => {
     try {
         const id = req.params.id;
         if (!id) {
             return res.status(400).json({ success: false, message: "Valid User ID is required" });
         }
-        // এডমিন নিজে নিজেকে ডিলিট করা থেকে বিরত রাখার লজিক (Optional)
         if (id === req.user.id) {
             return res.status(400).json({ success: false, message: "You cannot delete your own admin account!" });
         }

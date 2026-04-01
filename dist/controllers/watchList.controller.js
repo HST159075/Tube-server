@@ -5,16 +5,20 @@ export const addToWatchlist = async (req, res) => {
         const userId = req.user.id;
         const existingEntry = await prisma.watchlist.findUnique({
             where: {
-                userId_mediaId: { userId, mediaId }
-            }
+                userId_mediaId: { userId, mediaId },
+            },
         });
         if (existingEntry) {
-            return res.status(400).json({ success: false, message: "Already in your watchlist!" });
+            return res
+                .status(400)
+                .json({ success: false, message: "Already in your watchlist!" });
         }
         const newEntry = await prisma.watchlist.create({
-            data: { userId, mediaId }
+            data: { userId, mediaId },
         });
-        res.status(201).json({ success: true, message: "Added to watchlist!", data: newEntry });
+        res
+            .status(201)
+            .json({ success: true, message: "Added to watchlist!", data: newEntry });
     }
     catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -26,9 +30,9 @@ export const getMyWatchlist = async (req, res) => {
         const watchlist = await prisma.watchlist.findMany({
             where: { userId },
             include: {
-                media: true
+                media: true,
             },
-            orderBy: { id: 'desc' }
+            orderBy: { id: "desc" },
         });
         res.status(200).json({ success: true, data: watchlist });
     }
@@ -40,17 +44,21 @@ export const removeFromWatchlist = async (req, res) => {
     try {
         const id = req.params.id;
         if (!id) {
-            return res.status(400).json({ success: false, message: "Watchlist entry ID is required" });
+            return res
+                .status(400)
+                .json({ success: false, message: "Watchlist entry ID is required" });
         }
         await prisma.watchlist.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
         res.status(200).json({ success: true, message: "Removed from watchlist!" });
     }
     catch (error) {
-        res.status(400).json({ success: false, message: "Failed to remove item. Invalid ID." });
+        res
+            .status(400)
+            .json({ success: false, message: "Failed to remove item. Invalid ID." });
     }
 };
 //# sourceMappingURL=watchList.controller.js.map

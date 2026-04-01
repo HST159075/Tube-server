@@ -1,7 +1,4 @@
 import { Request, Response } from "express";
-/**
- * Re-using the custom type for authenticated requests.
- */
 interface AuthRequest extends Request {
     user?: {
         id: string;

@@ -5,7 +5,6 @@ interface AuthRequest extends Request {
   user?: { id: string };
 }
 
-// GET /api/v1/reviews?mediaId=...
 export const getReviewsByMedia = async (req: Request, res: Response) => {
   try {
     const { mediaId } = req.query;
@@ -27,7 +26,7 @@ export const getReviewsByMedia = async (req: Request, res: Response) => {
             user: { select: { id: true, name: true, image: true } } 
           },
           orderBy: { createdAt: "asc" },
-          take: 5, // লেটেস্ট ৫টি কমেন্ট দেখাবে
+          take: 5, 
         },
       },
       orderBy: { createdAt: "desc" },
@@ -39,7 +38,6 @@ export const getReviewsByMedia = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/v1/reviews
 export const createReview = async (req: AuthRequest, res: Response) => {
   try {
     const { rating, content, hasSpoiler, tags, mediaId } = req.body;
@@ -70,7 +68,6 @@ export const createReview = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// PATCH /api/v1/reviews/approve/:id
 export const approveReview = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -79,13 +76,11 @@ export const approveReview = async (req: Request, res: Response) => {
        return res.status(400).json({ success: false, message: "Invalid review ID" });
     }
 
-    // ১. রিভিউ এপ্রুভ করা
     const updatedReview = await prisma.review.update({
       where: { id },
       data: { isApproved: true },
     });
 
-    // ২. ওই মিডিয়ার সব এপ্রুভড রিভিউর এভারেজ রেটিং বের করা
     const stats = await prisma.review.aggregate({
       where: { 
         mediaId: updatedReview.mediaId, 
@@ -94,7 +89,6 @@ export const approveReview = async (req: Request, res: Response) => {
       _avg: { rating: true },
     });
 
-    // ৩. মিডিয়া টেবিলে এভারেজ রেটিং আপডেট করা
     await prisma.media.update({
       where: { id: updatedReview.mediaId },
       data: { 

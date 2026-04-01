@@ -5,7 +5,7 @@ import {
   getAllUsers,
   getAdminStats,
   getAllUsersForAdmin,
-  deleteUser, // নতুন ইমপোর্ট
+  deleteUser, 
 } from "../controllers/user.controller.js";
 import {
   authMiddleware,
@@ -15,7 +15,7 @@ import { upload } from "../lib/cloudinary.js";
 
 const router = Router();
 
-// ১. এডমিন ড্যাশবোর্ড স্ট্যাটাস
+
 router.get("/admin/stats", authMiddleware, adminMiddleware, getAdminStats);
 
 router.get(

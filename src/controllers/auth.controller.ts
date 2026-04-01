@@ -5,12 +5,11 @@ import { prisma } from "../lib/prisma.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_super_secret_key";
 
-// ১. ইউজার রেজিস্ট্রেশন
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
-    // ইমেইল চেক করা
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ success: false, message: "User already exists!" });

@@ -6,7 +6,6 @@ export const getAllMedia = async (req, res) => {
         const where = {};
         if (type)
             where.type = type;
-        // যদি genre থাকে, তবে তা arrays এর ভেতর চেক করবে
         if (genre)
             where.genres = { has: genre };
         if (search) {
@@ -28,7 +27,6 @@ export const getAllMedia = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ২. Create Media (Admin Only)
 export const createMedia = async (req, res) => {
     try {
         const data = req.body;
@@ -38,7 +36,6 @@ export const createMedia = async (req, res) => {
         const newMedia = await prisma.media.create({
             data: {
                 ...data,
-                // নিশ্চিত করা হচ্ছে যে releaseYear নাম্বার হিসেবে যাচ্ছে
                 releaseYear: data.releaseYear ? Number(data.releaseYear) : undefined,
             }
         });
@@ -48,7 +45,6 @@ export const createMedia = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
-// ৩. Get Single Media Details
 export const getMediaById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -97,7 +93,6 @@ export const watchMedia = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-// ৫. Delete Media (Type-safe Version)
 export const deleteMedia = async (req, res) => {
     try {
         const id = req.params.id;

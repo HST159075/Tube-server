@@ -107,3 +107,18 @@ export const approveReview = async (req: Request, res: Response) => {
     res.status(400).json({ success: false, message: "Failed to approve review" });
   }
 };
+
+export const getAllReviewsForAdmin = async (req: Request, res: Response) => {
+  try {
+    const reviews = await prisma.review.findMany({
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        media: { select: { title: true } }, 
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json({ success: true, data: reviews });
+  } catch (e: any) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+};

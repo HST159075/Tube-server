@@ -27,13 +27,13 @@ export const auth = betterAuth({
             secure: true,
             httpOnly: true,
             sameSite: "none",
-            // partitioned: true,
+            partitioned: true,
         },
     },
     session: {
         cookieCache: {
             enabled: true,
-            maxAge: 5 * 60, // ৫ মিনিট
+            maxAge: 20 * 60,
         },
     },
     user: {

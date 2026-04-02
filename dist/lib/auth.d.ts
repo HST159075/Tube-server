@@ -1,6 +1,7 @@
 export declare const auth: import("better-auth").Auth<{
     baseURL: string | undefined;
     database: (options: import("better-auth").BetterAuthOptions) => import("better-auth").DBAdapter<import("better-auth").BetterAuthOptions>;
+    appUrl: string | undefined;
     emailAndPassword: {
         enabled: true;
     };
@@ -9,18 +10,18 @@ export declare const auth: import("better-auth").Auth<{
         google: {
             clientId: string;
             clientSecret: string;
-            redirectURI: string;
+            prompt: "select_account consent";
+            accessType: "offline";
         };
     };
     advanced: {
-        useSecureCookies: true;
         crossSubdomainCookies: {
             enabled: boolean;
         };
         defaultCookieAttributes: {
             secure: true;
             httpOnly: true;
-            sameSite: "none";
+            sameSite: "lax";
         };
     };
     session: {

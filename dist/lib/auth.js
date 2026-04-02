@@ -6,35 +6,34 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
+    appUrl: process.env.CLIENT_URL,
     emailAndPassword: {
         enabled: true,
     },
-    trustedOrigins: [
-        "https://tube-client.vercel.app",
-        "http://localhost:3000",
-    ],
+    trustedOrigins: ["https://tube-client.vercel.app", "http://localhost:3000"],
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
+            prompt: "select_account consent",
+            accessType: "offline",
         },
     },
     advanced: {
-        useSecureCookies: true,
         crossSubdomainCookies: {
             enabled: false,
         },
         defaultCookieAttributes: {
             secure: true,
             httpOnly: true,
-            sameSite: "none",
+            sameSite: "lax",
+            // partitioned: true,
         },
     },
     session: {
         cookieCache: {
             enabled: true,
-            maxAge: 10 * 60,
+            maxAge: 5 * 60, // ৫ মিনিট
         },
     },
     user: {

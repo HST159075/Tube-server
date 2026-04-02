@@ -21,7 +21,7 @@ export declare const auth: import("better-auth").Auth<{
         defaultCookieAttributes: {
             secure: true;
             httpOnly: true;
-            sameSite: "lax";
+            sameSite: "none";
         };
     };
     session: {

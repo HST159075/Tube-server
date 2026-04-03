@@ -13,15 +13,12 @@ import commentRoutes from "./routes/comment.routes.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// ✅ FIX: origin array তে localhost যোগ করো
 const allowedOrigins = [
     "https://tube-client.vercel.app",
-    "http://localhost:3000", // ← local dev frontend
-    "http://localhost:3001", // ← extra (optional)
+    "http://localhost:3000",
 ];
 app.use(cors({
     origin: (origin, callback) => {
-        // origin undefined হলে same-origin বা Postman — allow করো
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         }
@@ -29,13 +26,12 @@ app.use(cors({
             callback(new Error(`CORS blocked: ${origin}`));
         }
     },
-    credentials: true, // ← cookie-র জন্য জরুরি
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     exposedHeaders: ["set-cookie"],
 }));
 app.all("/api/auth/*all", toNodeHandler(auth));
-// Custom routes — /api/v1/...
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
@@ -47,14 +43,15 @@ app.use("/api/v1/comments", commentRoutes);
 app.get("/", (_req, res) => {
     res.send("CineTube Server is Running! 🚀");
 });
-// 404 handler
 app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: `Route not found: ${req.originalUrl} (${req.method})`,
     });
 });
-// Global error handler
+app.get("/api/v1/health", (req, res) => {
+    res.json({ status: "ok", time: new Date().toISOString() });
+});
 app.use((err, _req, res, _next) => {
     const statusCode = err.statusCode || 500;
     res.status(statusCode).json({

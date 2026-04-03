@@ -40,6 +40,9 @@ app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/likes", likeRoutes);
 app.use("/api/v1/comments", commentRoutes);
+app.get("/api/v1/health", (req, res) => {
+    res.json({ status: "ok", time: new Date().toISOString() });
+});
 app.get("/", (_req, res) => {
     res.send("CineTube Server is Running! 🚀");
 });

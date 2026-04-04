@@ -10,8 +10,7 @@ export declare const auth: import("better-auth").Auth<{
         google: {
             clientId: string;
             clientSecret: string;
-            prompt: "select_account consent";
-            accessType: "offline";
+            redirectURI: string;
         };
     };
     advanced: {

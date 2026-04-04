@@ -16,8 +16,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      prompt: "select_account consent",
-      accessType: "offline",
+      redirectURI: "https://tube-server.onrender.com/api/auth/callback/google",
     },
   },
   advanced: {

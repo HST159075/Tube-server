@@ -2,7 +2,7 @@ import { prisma } from "../lib/prisma.js";
 // ১. Get All Media with Filters
 export const getAllMedia = async (req, res) => {
     try {
-        const { genre, type, search, sortBy } = req.query;
+        const { genre, type, search, sort, sortBy, limit } = req.query;
         const where = {};
         if (type)
             where.type = type;
@@ -14,12 +14,26 @@ export const getAllMedia = async (req, res) => {
                 { director: { contains: String(search), mode: 'insensitive' } }
             ];
         }
+        // Support both "sort" (frontend) and "sortBy" (legacy)
+        const sortParam = (sort || sortBy || 'newest');
+        let orderBy = { createdAt: 'desc' }; // default: newest
+        if (sortParam === 'top-rated' || sortParam === 'rating') {
+            orderBy = { avgRating: 'desc' };
+        }
+        else if (sortParam === 'most-liked') {
+            orderBy = { likes: { _count: 'desc' } };
+        }
+        else if (sortParam === 'most-reviewed') {
+            orderBy = { reviews: { _count: 'desc' } };
+        }
+        const take = limit ? parseInt(limit, 10) : undefined;
         const media = await prisma.media.findMany({
             where,
             include: {
                 _count: { select: { reviews: true } }
             },
-            orderBy: sortBy === 'rating' ? { avgRating: 'desc' } : { createdAt: 'desc' }
+            orderBy,
+            ...(take ? { take } : {}),
         });
         res.status(200).json({ success: true, data: media });
     }

@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
-    "https://tube-client.vercel.app",
+    "https://tube-client.onrender.com",
     "http://localhost:3000",   
 ];
 

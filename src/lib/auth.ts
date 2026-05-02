@@ -11,7 +11,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  trustedOrigins: ["https://tube-client.vercel.app", "http://localhost:3000"],
+  trustedOrigins: ["https://tube-client.onrender.com", "http://localhost:3000"],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,

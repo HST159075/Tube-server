@@ -16,7 +16,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      redirectURI: "https://tube-server.onrender.com/api/auth/callback/google",
+      redirectURI: process.env.CLIENT_URL ? `${process.env.CLIENT_URL}/api/auth/callback/google` : "http://localhost:3000/api/auth/callback/google",
     },
   },
   advanced: {
